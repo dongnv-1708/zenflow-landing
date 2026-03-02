@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import Head from 'next/head';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import { CheckCircle, Clock, Sparkles, ArrowRight, Github, Twitter, Linkedin, Slack } from 'lucide-react';
 
 /**
@@ -19,13 +18,15 @@ const colors = {
   subtext: '#6B7280', // Medium Gray
 };
 
-const fadeInUp = {
+const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
 };
 
-const staggerContainer = {
+const staggerContainer: Variants = {
+  hidden: { opacity: 0 },
   visible: {
+    opacity: 1,
     transition: {
       staggerChildren: 0.1,
     },
@@ -35,11 +36,9 @@ const staggerContainer = {
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white text-gray-900 font-sans selection:bg-emerald-100">
-      <Head>
-        <title>ZenFlow | Quản lý công việc, giảm bớt áp lực</title>
-        <meta name="description" content="ZenFlow giúp bạn sắp xếp công việc một cách tối giản và hiệu quả nhất." />
-      </Head>
-
+      <title>ZenFlow | Quản lý công việc, giảm bớt áp lực</title>
+      <meta name="description" content="ZenFlow giúp bạn sắp xếp công việc một cách tối giản và hiệu quả nhất." />
+      
       {/* --- Navbar --- */}
       <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
