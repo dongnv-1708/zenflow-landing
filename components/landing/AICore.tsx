@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, Variants } from "framer-motion";
 
 const lines = [
   "It watches volatility.",
@@ -70,7 +70,7 @@ export function AICore() {
   const isInView = useInView(containerRef, { amount: 0.5, once: true });
 
   // Parent container variants for staggered children
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: {},
     visible: {
       transition: {
@@ -80,7 +80,7 @@ export function AICore() {
   };
 
   // Line animation variants
-  const lineVariants = {
+  const lineVariants: Variants = {
     hidden: { 
       opacity: 0, 
       y: 20, 
@@ -92,25 +92,28 @@ export function AICore() {
       filter: "blur(0px)",
       transition: { 
         duration: 0.8, 
-        ease: "easeOut" 
+        ease: "easeOut" as const
       },
     },
     dim: {
       opacity: 0.3,
       filter: "blur(1px)",
-      transition: { duration: 1 }
+      transition: { 
+        delay: 1.5, // Delay dimming until the next line starts (based on 1.5s stagger)
+        duration: 1 
+      }
     }
   };
 
   // Underline variants
-  const underlineVariants = {
+  const underlineVariants: Variants = {
     hidden: { width: "0%" },
     visible: { 
       width: "100%",
       transition: { 
         delay: 0.5, // Start underline after text fades in
         duration: 1, 
-        ease: "easeInOut" 
+        ease: "easeInOut" as const
       }
     }
   };
@@ -132,26 +135,11 @@ export function AICore() {
           <motion.div 
             key={index} 
             className="relative inline-block group"
-            variants={{
-              hidden: lineVariants.hidden,
-              visible: (i: number) => ({
-                ...lineVariants.visible,
-                // If it's the last line, don't dim it yet. 
-                // If it's a previous line, dim it when the next one appears.
-                // We use a custom stagger logic here.
-              })
-            }}
-            // Advanced logic: we can trigger the 'dim' state based on the next child's progress
-            // For simplicity in a single variant object, we use animate with conditional states
+            variants={lineVariants}
+            // Handling the sequential "visible -> dim" animation logic
             animate={isInView ? (
-              index === 0 ? ["visible", "dim"] : 
-              index === 1 ? ["visible", "dim"] : 
-              "visible"
+              index < lines.length - 1 ? ["visible", "dim"] : "visible"
             ) : "hidden"}
-            // Overriding the default stagger slightly for the dimming effect
-            transition={{
-              dim: { delay: (index + 1) * 1.5 } 
-            }}
           >
             <h2 className="text-3xl md:text-6xl font-black text-white tracking-tight uppercase italic pb-4">
               {text}
